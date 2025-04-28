@@ -1,0 +1,35 @@
+[package]
+name = "ai-rust-courses"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+# 定义多个二进制目标，每个示例文件作为一个单独的可执行程序
+[[bin]]
+name = "01_variables_and_data_types"
+path = "src/01_variables_and_data_types.rs"
+
+[[bin]]
+name = "02_functions_and_control_flow"
+path = "src/02_functions_and_control_flow.rs"
+
+[[bin]]
+name = "03_ownership"
+path = "src/03_ownership.rs"
+
+[[bin]]
+name = "04_structs_enums_pattern_matching"
+path = "src/04_structs_enums_pattern_matching.rs"
+
+[[bin]]
+name = "05_collections"
+path = "src/05_collections.rs"
+
+[[bin]]
+name = "06_packages_modules"
+path = "src/06_packages_modules.rs"
+
+[[bin]]
+name = "07_error_handling_generics_traits_lifetimes"
+path = "src/07_error_handling_generics_traits_lifetimes.rs"
