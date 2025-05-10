@@ -17,7 +17,7 @@ fn main() {
     println!("{:?}", score);
 
     // 遍历hashmap
-    for (key, value) in &scores {
+    for (key, value) in scores.iter() {
         println!("遍历{}: {}", key, value);
     }
 
@@ -31,8 +31,8 @@ fn main() {
     println!("{:?}", scores);
 
     // 3. 根据旧值更新
-    let text = "hello world wonderful world";
-    let mut map = HashMap::new();
+    let text: &str = "hello world wonderful world";
+    let mut map: HashMap<&str, i32> = HashMap::new();
     for word in text.split_whitespace() {
         let count = map.entry(word).or_insert(0);
         *count += 1;
@@ -40,8 +40,8 @@ fn main() {
     println!("{:?}", map);
 
     // vec -> hashmap
-    let teams = vec![String::from("Blue"), String::from("Yellow")];
-    let initial_scores = vec![10, 50];
+    let teams: Vec<String> = vec![String::from("Blue"), String::from("Yellow")];
+    let initial_scores: Vec<i32> = vec![10, 50];
     let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
     println!("vec -> hashmap: {:?}", scores);
 
