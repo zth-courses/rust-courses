@@ -1,53 +1,127 @@
 // 图书馆管理终端应用
 use std::{io, env};
+use anyhow::Result;
+use clap::{Parser, Subcommand};
+use dialoguer::{Input, Select};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fs;
+use std::path::Path;
 
-fn main() {
-    enum FeaturesOptions {
-        ADD(u8),
-        EDIT(u8),
-        DELETE(u8),
-        GET(u8),
-        QUIT(u8),
-    }
+fn main() -> Result<()> {
+    let cli = Cli::parse();
+    let mut library = Library::load_from_file()?;
 
-
-    fn math_feature(num: u8) -> FeaturesOptions {
-        match num {
-            1 => FeaturesOptions::ADD(1),
-            _  => {
-                println!("未知操作");
-                FeaturesOptions::QUIT(1)
-            },
+    match cli.command {
+        Commands::Add => {
+            let title: String = Input::new().with_prompt("请输入书名").interact_text()?;
+            let author: String = Input::new().with_prompt("请输入作者").interact_text()?;
+            let isbn: String = Input::new().with_prompt("请输入ISBN").interact_text()?;
+            
+            let book = Book {
+                title,
+                author,
+                isbn: isbn.clone(),
+                available: true,
+            };
+            library.add_book(book)?;
+            println!("添加成功！");
+        }
+        Commands::Remove => {
+            let isbn: String = Input::new().with_prompt("请输入要删除的书籍ISBN").interact_text()?;
+            if library.remove_book(&isbn)?.is_some() {
+                println!("删除成功！");
+            } else {
+                println!("找不到该书籍");
+            }
+        }
+        Commands::List => {
+            library.list_books();
+        }
+        Commands::Borrow => {
+            let isbn: String = Input::new().with_prompt("请输入要借阅的书籍ISBN").interact_text()?;
+            if let Err(e) = library.borrow_book(&isbn) {
+                println!("借书失败：{}", e);
+            }
+        }
+        Commands::Return => {
+            let isbn: String = Input::new().with_prompt("请输入要归还的书籍ISBN").interact_text()?;
+            if let Err(e) = library.return_book(&isbn) {
+                println!("还书失败：{}", e);
+            }
         }
     }
 
-   // math_feature(1);
+    Ok(())
+}
 
-    println!(r"
-    0. 退出系统；
-    1. 新增图书；
-    2. 修改读书；
-    3. 删除图书；
-    4. 查询图书.
-    ");
+impl Library {
+    fn new() -> Self {
+        Self {
+            books: HashMap::new(),
+        }
+    }
 
+    // 从文件加载数据
+    fn load_from_file() -> Result<Self> {
+        let path = "library_data.json";
+        if Path::new(path).exists() {
+            let content = fs::read_to_string(path)?;
+            let books: HashMap<String, Book> = serde_json::from_str(&content)?;
+            Ok(Self { books })
+        } else {
+            Ok(Self::new())
+        }
+    }
 
+    // 保存数据到文件
+    fn save_to_file(&self) -> Result<()> {
+        let content = serde_json::to_string_pretty(&self.books)?;
+        fs::write("library_data.json", content)?;
+        Ok(())
+    }
 
-   loop {
-       // 获取终端输入
-       let mut feature_key: String = String::new();
-       // 获取终端输入
-       io::stdin().read_line(&mut feature_key).unwrap();
-       // 尝试将输入转换为数组
-       let feature_key: u8 = match feature_key.trim().parse() {
-           Ok(num) => {
-               num
-           },
-           Err(_) => {
-               println!("请输入数字");
-               continue;
-           }
-       };
-       math_feature(feature_key);
-   }
+    fn add_book(&mut self, book: Book) -> Result<()> {
+        self.books.insert(book.isbn.clone(), book);
+        self.save_to_file()?;
+        Ok(())
+    }
+
+    fn remove_book(&mut self, isbn: &str) -> Result<Option<Book>> {
+        let book = self.books.remove(isbn);
+        if book.is_some() {
+            self.save_to_file()?;
+        }
+        Ok(book)
+    }
+
+    fn borrow_book(&mut self, isbn: &str) -> Result<()> {
+        if let Some(book) = self.books.get_mut(isbn) {
+            if book.available {
+                book.available = false;
+                self.save_to_file()?;
+                println!("借书成功！");
+                Ok(())
+            } else {
+                anyhow::bail!("该书已被借出")
+            }
+        } else {
+            anyhow::bail!("找不到该书籍")
+        }
+    }
+
+    fn return_book(&mut self, isbn: &str) -> Result<()> {
+        if let Some(book) = self.books.get_mut(isbn) {
+            if !book.available {
+                book.available = true;
+                self.save_to_file()?;
+                println!("还书成功！");
+                Ok(())
+            } else {
+                anyhow::bail!("该书已在馆内")
+            }
+        } else {
+            anyhow::bail!("找不到该书籍")
+        }
+    }
 }

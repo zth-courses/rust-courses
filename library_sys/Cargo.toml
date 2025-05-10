@@ -4,5 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-clap = "4.5.37"
+clap = { version = "4.5.37", features = ["derive"] } 
 dialoguer = "0.11.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+
+# 定义多个二进制目标，每个示例文件作为一个单独的可执行程序
+[[bin]]
+name = "ai_library_sys"
+path = "src/ai_library_sys.rs"
