@@ -18,5 +18,12 @@ fn main() {
     while let Some(x) = stack.pop() {
         println!("{}", x);
     }
-  
+
+    let numbers = vec![10, 20, 30];
+    match &numbers[..] {
+        [] => println!("Empty"),
+        [first] => println!("One element: {}", first),
+        [first, second] => println!("Two elements: {}, {}", first, second),
+        _ => println!("More elements"),
+    }
 }

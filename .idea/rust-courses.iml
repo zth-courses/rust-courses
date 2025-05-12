@@ -5,9 +5,13 @@
       <sourceFolder url="file://$MODULE_DIR$/ai-rust-courses/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/guessing_game/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/library_sys/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/match1_demo/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/simple_calculator/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/ai-rust-courses/target" />
       <excludeFolder url="file://$MODULE_DIR$/guessing_game/target" />
       <excludeFolder url="file://$MODULE_DIR$/library_sys/target" />
+      <excludeFolder url="file://$MODULE_DIR$/match1_demo/target" />
+      <excludeFolder url="file://$MODULE_DIR$/simple_calculator/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
