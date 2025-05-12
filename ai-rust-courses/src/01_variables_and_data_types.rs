@@ -54,7 +54,7 @@ fn main() {
     
     // 浮点数类型
     let float_32: f32 = 3.14;      // 32位浮点数
-    let float_64: f64 = 3.14159;   // 64位浮点数（默认浮点类型）
+    let float_64: f64 = std::f64::consts::PI;   // 64位浮点数（默认浮点类型）
     
     println!("浮点数: f32={}, f64={}", float_32, float_64);
     
@@ -83,8 +83,10 @@ fn main() {
     let arr1 = [1, 2, 3, 4, 5]; // 类型推断为[i32; 5]
     let arr2: [i32; 5] = [1, 2, 3, 4, 5]; // 显式类型标注
     let arr3 = [3; 5]; // 等同于 [3, 3, 3, 3, 3]
+    let months = ["January", "February", "March", "April", "May", "June", "July",
+        "August", "September", "October", "November", "December"];
     
-    println!("数组: arr1[0]={}, arr2[1]={}, arr3[2]={}", arr1[0], arr2[1], arr3[2]);
+    println!("数组: arr1[0]={}, arr2[1]={}, arr3[2]={}， months[3]={}", arr1[0], arr2[1], arr3[2], months[3]);
     println!("数组长度: {}", arr1.len());
     
     // 字符串类型

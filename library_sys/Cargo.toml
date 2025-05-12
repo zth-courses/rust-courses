@@ -14,3 +14,7 @@ anyhow = "1.0"
 [[bin]]
 name = "ai_library_sys"
 path = "src/ai_library_sys.rs"
+
+[[bin]]
+name = "ai_library_sys1"
+path = "src/ai_library_sys1.rs"

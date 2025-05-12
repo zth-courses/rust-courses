@@ -4,5 +4,11 @@
     "author": "rzx00",
     "isbn": "123",
     "available": true
+  },
+  "111111111111111111111111": {
+    "title": "Rust book",
+    "author": "rzx",
+    "isbn": "111111111111111111111111",
+    "available": true
   }
 }

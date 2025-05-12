@@ -10,7 +10,7 @@ fn main() {
 
     println!("猜字游戏！");
     // 生成一个随机数
-    let x: u32 = rand::thread_rng().gen_range(1..101);
+    let x: u32 = rand::rng().random_range(1..101);
     println!("随机数是：{}", x);
 
     loop {

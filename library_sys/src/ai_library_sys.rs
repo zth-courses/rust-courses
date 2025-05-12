@@ -15,13 +15,26 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// 自定义命令名称
+    #[command(name = "add", alias = "a", alias = "A", about = "添加新书")]
     Add,
-    Remove,
+    Remove {
+        /// 要删除的书籍ISBN, 通过命令行方式参数传入
+        #[arg(short, long, required = false, default_value = "", value_parser = validate_isbn, help = "要删除的书籍ISBN")]
+        isbn: String,
+    },
     List,
     Borrow,
     Return,
 }
-
+// 自定义ISBN验证函数
+fn validate_isbn(isbn: &str) -> Result<String> {
+    if isbn.len() == 10 || isbn.len() == 13 {
+        Ok(isbn.to_string())
+    } else {
+        Err(anyhow::anyhow!("ISBN必须是10位或13位"))
+    }
+}
 #[derive(Serialize, Deserialize, Clone)]
 struct Book {
     title: String,
@@ -132,19 +145,28 @@ fn main() -> Result<()> {
           let book = Book {
               title,
               author,
-              isbn: isbn.clone(),
+              isbn,
               available: true,
           };
           library.add_book(book)?;
           println!("添加成功！");
       }
-      Commands::Remove => {
-          let isbn: String = Input::new().with_prompt("请输入要删除的书籍ISBN").interact_text()?;
-          if library.remove_book(&isbn)?.is_some() {
-              println!("删除成功！");
-          } else {
-              println!("找不到该书籍");
-          }
+      Commands::Remove{isbn} => {
+         // 如果isbn为空，则提示用户输入ISBN
+         if isbn.is_empty() {
+            let isbn_str: String = Input::new().with_prompt("请输入要删除的书籍ISBN").interact_text()?;
+            if library.remove_book(&isbn_str)?.is_some() {
+                println!("删除成功！");
+            } else {
+                println!("找不到该书籍");
+            }
+        } else {
+            if library.remove_book(&isbn)?.is_some() {
+                println!("删除成功！");
+            } else {
+                println!("找不到该书籍");
+            }
+        }
       }
       Commands::List => {
           library.list_books();
@@ -168,3 +190,11 @@ fn main() -> Result<()> {
 
 // 要运行这个文件，可以使用命令：
 // cargo run --bin ai_library_sys
+/*
+cargo run --bin ai_library_sys add - 添加新书
+cargo run --bin ai_library_sys list - 查看所有书籍
+cargo run --bin ai_library_sys borrow - 借阅书籍
+cargo run --bin ai_library_sys return - 归还书籍
+cargo run --bin ai_library_sys remove - 删除书籍
+
+*/
